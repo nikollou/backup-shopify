@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import csv
 import json
 import requests
@@ -14,28 +16,33 @@ url = 'https://' + os.getenv('SHOPIFY_URL') + '.myshopify.com/admin/api/2020-01/
 
 params = {'limit': 250}
 page_number = 1
-count = requests.get(url + 'collects/count.json',auth=(os.getenv('SHOPIFY_API_KEY'), os.getenv('SHOPIFY_API_PASSWORD'))).json().get('count')
+count = requests.get(url + 'custom_collections/count.json',auth=(os.getenv('SHOPIFY_API_KEY'), os.getenv('SHOPIFY_API_PASSWORD'))).json().get('count')
 
 print("Total Products: #{count}".format(count=count))
 
-collects = requests.get(url + 'collects.json',params={**params},auth=(os.getenv('SHOPIFY_API_KEY'), os.getenv('SHOPIFY_API_PASSWORD')))
+collects = requests.get(url + 'custom_collections.json',params={**params},auth=(os.getenv('SHOPIFY_API_KEY'), os.getenv('SHOPIFY_API_PASSWORD')))
 
 f = csv.writer(open("collections.csv", "w"))
 f.writerow(["Handle", "Title", "Body (HTML)"])
+
+
+z = collects.json()
+print(z)
+
 
 while collects:
 	print("Processing page: #{page_number}".format(page_number=page_number))
 	try:
 		x = collects.json()
 		for item in x["collects"]:
-			asset_id = item["collection_id"]
+			asset_id = item["id"]
 			y = requests.get(url + 'collections/' + str(asset_id) + '.json',params={**params},auth=(os.getenv('SHOPIFY_API_KEY'), os.getenv('SHOPIFY_API_PASSWORD')))
 			y = y.json()
 
 			f.writerow([y["collection"]["handle"],y["collection"]["title"],y["collection"]["body_html"]])
 
-		collects = collects.links['next']['url']
-		collects = requests.get(collects,params={**params},auth=(os.getenv('SHOPIFY_API_KEY'), os.getenv('SHOPIFY_API_PASSWORD')))
+		collects = custom_collections.links['next']['url']
+		collects = requests.get(custom_collections,params={**params},auth=(os.getenv('SHOPIFY_API_KEY'), os.getenv('SHOPIFY_API_PASSWORD')))
 		
 	except KeyError:
    		collects = ""

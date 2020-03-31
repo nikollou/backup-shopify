@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import csv
 import json
 import requests
@@ -29,7 +31,6 @@ while pages:
 		x = pages.json()
 		for item in x["pages"]:
 			print(item["title"])
-
 			f.writerow([item["handle"],item["title"],item["body_html"]])
 
 		pages = pages.links['next']['url']

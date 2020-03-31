@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import csv
 import json
 import requests
@@ -81,6 +83,6 @@ while customers:
 		customers = requests.get(customers,params={**params},auth=(os.getenv('SHOPIFY_API_KEY'), os.getenv('SHOPIFY_API_PASSWORD')))
 		
 	except KeyError:
-   		products = ""
+   		customers = ""
 
 	page_number += 1

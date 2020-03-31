@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import csv
 import json
 import requests
@@ -25,7 +27,6 @@ while policies:
 		x = policies.json()
 		for item in x["policies"]:
 			print(item["title"])
-
 			f.writerow([item["handle"],item["title"],item["body"]])
 
 		policies = policies.links['next']['url']
